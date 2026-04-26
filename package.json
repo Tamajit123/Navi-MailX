@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "backend": "node server/index.js",
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
@@ -11,6 +12,7 @@
   "dependencies": {
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
+    "express": "^4.21.2",
     "framer-motion": "^12.11.0",
     "next": "^15.3.3",
     "react": "^19.0.0",

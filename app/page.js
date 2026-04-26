@@ -43,6 +43,9 @@ const responseMotion = {
   }
 };
 
+const FRONTEND_BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function HomePage() {
   const [email, setEmail] = useState(sampleEmail);
   const [result, setResult] = useState(null);
@@ -86,6 +89,19 @@ export default function HomePage() {
     setError("");
 
     try {
+      try {
+        const healthResponse = await fetch(`${FRONTEND_BACKEND_URL}/health`, {
+          cache: "no-store"
+        });
+        const healthPayload = await healthResponse.json();
+
+        if (healthPayload?.status !== "ok") {
+          toast("AI service offline. Running in fallback mode.");
+        }
+      } catch {
+        toast("AI service offline. Running in fallback mode.");
+      }
+
       const response = await fetch("/api/email", {
         method: "POST",
         headers: {
@@ -101,6 +117,11 @@ export default function HomePage() {
       }
 
       setResult(payload);
+
+      if (payload.source === "fallback") {
+        toast("AI service offline. Running in fallback mode.");
+      }
+
       toast.success("AI response generated", {
         description: `Intent detected: ${payload.intent}`
       });

@@ -12,6 +12,24 @@ services:
       timeout: 5s
       retries: 20
 
+  backend:
+    image: node:20-alpine
+    container_name: navimailx-backend
+    working_dir: /app
+    command: sh -c "npm install && node server/index.js"
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3
+      OLLAMA_TIMEOUT_MS: 45000
+    depends_on:
+      ollama:
+        condition: service_healthy
+
   app:
     build:
       context: .
@@ -20,12 +38,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      OLLAMA_BASE_URL: http://ollama:11434
-      OLLAMA_MODEL: llama3
-      OLLAMA_TIMEOUT_MS: 45000
+      NEXT_PUBLIC_API_URL: http://backend:5000
     depends_on:
-      ollama:
-        condition: service_healthy
+      backend:
+        condition: service_started
 
 volumes:
   ollama_data:

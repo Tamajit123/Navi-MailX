@@ -1,6 +1,6 @@
 # 🚀 NaviMailX — AI Email Router (SaaS)
 
-NaviMailX is a **production-style AI Email Routing system** that classifies customer emails by intent and generates intelligent responses using **local LLMs (Ollama)**.
+NaviMailX is a **production-style AI Email Routing system** that classifies customer emails by intent and generates intelligent responses using an **external AI backend connected to Ollama**.
 
 Built with a **modern SaaS architecture** using Next.js, Tailwind, and Docker.
 
@@ -56,6 +56,7 @@ Built with a **modern SaaS architecture** using Next.js, Tailwind, and Docker.
 ### Backend
 
 * Next.js API Routes
+* Express.js AI backend
 * Node.js
 
 ### AI / ML
@@ -79,6 +80,9 @@ app/
   layout.js
   page.js
 
+server/
+  index.js
+
 components/
   email/
     intent-badge.js
@@ -92,13 +96,10 @@ components/
     toaster.js
 
 lib/
-  classifier.js
   guardrails.js
   logger.js
-  ollama.js
   rate-limit.js
   request.js
-  responder.js
   utils.js
 
 scripts/
@@ -108,7 +109,7 @@ middleware.js
 Dockerfile
 docker-compose.yml
 tailwind.config.js
-postcss.config.mjs
+postcss.config.js
 ```
 
 ---
@@ -125,10 +126,16 @@ npm install
 
 ```bash
 ollama pull llama3
-ollama run llama3
+ollama serve
 ```
 
-### 3. Start the app
+### 3. Start the backend
+
+```bash
+npm run backend
+```
+
+### 4. Start the app
 
 ```bash
 npm run dev
@@ -156,10 +163,17 @@ docker exec -it navimailx-ollama ollama pull llama3
 
 ## 📬 API Usage
 
-### Endpoint
+### Frontend endpoint
 
 ```http
 POST /api/email
+```
+
+### External AI backend
+
+```http
+POST /generate
+GET /health
 ```
 
 ### Request
